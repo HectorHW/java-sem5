@@ -26,6 +26,10 @@ public class ShapeRepository {
         return this.shapes;
     }
 
+    public void clear(){
+        this.shapes.clear();
+    }
+
     public void set(List<Shape> shapes){
         this.shapes = new ArrayList<>(shapes);
     }

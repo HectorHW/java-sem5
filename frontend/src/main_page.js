@@ -5,7 +5,7 @@ import { Stage, Layer, Line, Ellipse, Rect } from 'react-konva';
 
 import get_host from "./shared";
 
-import { SaveButton, LoadButton } from "./buttons"
+import { SaveButton, LoadButton, DBSave, DBLoad, ClearButton } from "./buttons"
 
 var address = get_host();
 
@@ -195,21 +195,37 @@ class UpdatingCanvas extends Component {
 class Controls extends Component {
     render() {
         return (<div>
-            <SaveButton />
-            <LoadButton />
+            <SaveButton on_sucess={this.props.update} />
+            <LoadButton on_sucess={this.props.update} />
+            <ClearButton on_sucess={this.props.update} />
+            <DBSave on_sucess={this.props.update} />
+            <DBLoad on_sucess={this.props.update} />
         </div>);
     }
 }
 
 class DrawApp extends Component {
+
+    constructor(props) {
+        super(props);
+        this.canvas = React.createRef();
+    }
+
+    handleUpdate = () => {
+        this.canvas.current.run_update();
+    }
+
     render() {
+
+        let canvas = (<UpdatingCanvas ref={this.canvas} />);
+
         return (<div style={{
             "display": "flex",
             "flexDirection": "row"
         }}>
-            <UpdatingCanvas />
+            {canvas}
             <div style={{ "paddingLeft": "30px", "paddingTop": "100px" }}>
-                <Controls />
+                <Controls update={this.handleUpdate} />
             </div>
 
 

@@ -29,6 +29,11 @@ public class ShapesController {
         return with_name(this.shapes.list());
     }
 
+    @DeleteMapping
+    public void dropShapes(){
+        this.shapes.clear();
+    }
+
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ShapeOut getConcreteShapeData(@PathVariable int id) {
         try{
