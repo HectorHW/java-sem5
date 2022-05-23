@@ -9,14 +9,15 @@ import { CreationPage } from "./creation";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AreaPage } from "./area";
 import { PerimeterPage } from "./perimeter";
+import { DeletePage } from "./delete";
 
 class Main extends Component {
   render() {
     return (<Router>
       <Routes>
         <Route path="/" element={<MainPage />}></Route>
-        <Route path="/add" element={<CreationPage />}></Route>
-        <Route path="/delete"></Route>
+        <Route path="/add"></Route>
+        <Route path="/delete" element={<DeletePage />}></Route>
         <Route path="/move"></Route>
         <Route path="/area" element={<AreaPage />}></Route>
         <Route path="/perimeter" element={<PerimeterPage />}></Route>

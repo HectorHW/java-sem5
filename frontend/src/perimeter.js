@@ -10,9 +10,19 @@ class SubmitButton extends Component {
             className="control-button"
             onClick={() => {
                 let selection = document.getElementById("shapeSelector").value;
-                fetch(`${address}/api/shapes/${selection}/perimeter`).then(
-                    data => data.json()
-                ).then(area => alert(`perimeter: ${area}`))
+                console.log(selection);
+                if (selection === 0 || selection) {
+                    fetch(`${address}/api/shapes/${selection}/perimeter`).then(
+                        data => {
+                            if (data.ok) {
+                                return data.json()
+                            } else {
+                                throw Error(data.json())
+                            }
+                        }
+                    ).then(area => alert(`perimeter: ${area}`))
+                }
+
             }}>compute</button>
     }
 }

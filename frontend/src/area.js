@@ -12,9 +12,17 @@ class SubmitButton extends Component {
                 let selection = document.getElementById("shapeSelector").value;
                 console.log(selection);
 
-                fetch(`${address}/api/shapes/${selection}/area`).then(
-                    data => data.json()
-                ).then(area => alert(`area: ${area}`))
+                if (selection === 0 || selection) {
+                    fetch(`${address}/api/shapes/${selection}/area`).then(
+                        data => {
+                            if (data.ok) {
+                                return data.json();
+                            } else {
+                                throw Error("error when getting area");
+                            }
+                        }
+                    ).then(area => alert(`area: ${area}`))
+                }
             }}>compute</button>
     }
 }
