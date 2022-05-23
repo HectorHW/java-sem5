@@ -61,6 +61,19 @@ public class ShapesController {
         }
     }
 
+    @GetMapping(value = "/{id}/intersection/{id2}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public boolean getShapeIntersection(@PathVariable int id, @PathVariable int id2) {
+        try{
+            Shape s1 = this.shapes.getOrError(id);
+            Shape s2 = this.shapes.getOrError(id2);
+            return s1.isCrossing(s2);
+        }catch(IndexOutOfBoundsException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }catch(UnsupportedOperationException e){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ShapeOut> deleteShape(@PathVariable int id) {
         try{

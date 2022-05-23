@@ -10,6 +10,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AreaPage } from "./area";
 import { PerimeterPage } from "./perimeter";
 import { DeletePage } from "./delete";
+import { IntersectionPage } from "./intersection";
 
 class Main extends Component {
   render() {
@@ -21,7 +22,7 @@ class Main extends Component {
         <Route path="/move"></Route>
         <Route path="/area" element={<AreaPage />}></Route>
         <Route path="/perimeter" element={<PerimeterPage />}></Route>
-        <Route path="/intersection"></Route>
+        <Route path="/intersection" element={<IntersectionPage />}></Route>
       </Routes>
     </Router >)
   }
