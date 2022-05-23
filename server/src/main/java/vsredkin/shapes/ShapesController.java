@@ -43,6 +43,24 @@ public class ShapesController {
         }
     }
 
+    @GetMapping(value="/{id}/area", produces = MediaType.APPLICATION_JSON_VALUE)
+    public double getShapeArea(@PathVariable int id) {
+        try{
+            return this.shapes.getOrError(id).area();
+        }catch(IndexOutOfBoundsException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping(value="/{id}/perimeter", produces = MediaType.APPLICATION_JSON_VALUE)
+    public double getShapePerimeter(@PathVariable int id) {
+        try{
+            return this.shapes.getOrError(id).length();
+        }catch(IndexOutOfBoundsException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ShapeOut> deleteShape(@PathVariable int id) {
         try{
