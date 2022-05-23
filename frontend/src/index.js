@@ -11,6 +11,7 @@ import { AreaPage } from "./area";
 import { PerimeterPage } from "./perimeter";
 import { DeletePage } from "./delete";
 import { IntersectionPage } from "./intersection";
+import { MovePage } from "./move";
 
 class Main extends Component {
   render() {
@@ -19,7 +20,7 @@ class Main extends Component {
         <Route path="/" element={<MainPage />}></Route>
         <Route path="/add"></Route>
         <Route path="/delete" element={<DeletePage />}></Route>
-        <Route path="/move"></Route>
+        <Route path="/move" element={<MovePage />}></Route>
         <Route path="/area" element={<AreaPage />}></Route>
         <Route path="/perimeter" element={<PerimeterPage />}></Route>
         <Route path="/intersection" element={<IntersectionPage />}></Route>

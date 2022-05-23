@@ -7,9 +7,12 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import vsredkin.model.figures2d.Shape;
+import vsredkin.model.points.Point2D;
+import vsredkin.shapes.data.MoveType;
 import vsredkin.shapes.data.NamedShape;
 import vsredkin.shapes.data.ShapeOut;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -82,6 +85,30 @@ public class ShapesController {
         }catch (IndexOutOfBoundsException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping(value = "/{id}/move", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ShapeOut> moveShape(@PathVariable int id, @RequestBody MoveType move) {
+        try{
+            var shapes = new ArrayList<>(this.shapes.list());
+            var target = this.shapes.getOrError(id);
+            if (move instanceof MoveType.Shift s){
+                target = (Shape)target.shift(new Point2D(new double[]{s.getDx(), s.getDy()}));
+            }else if (move instanceof MoveType.Rotate r){
+                target = (Shape) target.rotate(r.getAngle());
+            }else{
+                var m = (MoveType.Symmetry)move;
+                target = (Shape) target.symAxis(m.getAxis());
+            }
+
+            shapes.set(id, target);
+            this.shapes.set(shapes);
+            return with_name(this.shapes.list());
+
+        }catch (IndexOutOfBoundsException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
     }
 
     public static List<ShapeOut> with_name(List<Shape> shapes){
