@@ -3,6 +3,8 @@ import React, { Component } from "react";
 import { createRoot } from 'react-dom/client';
 import { Stage, Layer, Line, Ellipse, Rect } from 'react-konva';
 
+import Konva from "konva";
+
 import get_host from "./shared";
 
 import { SaveButton, LoadButton, DBSave, DBLoad, ClearButton } from "./buttons"
@@ -77,160 +79,196 @@ function drawShape(shapeData) {
     }
 }
 
-class Drawbox extends Component {
-    render() {
-
-        let a = transform({ "x": -10, "y": 0 });
-        let b = transform({ "x": 10, "y": 0 });
-        let c = transform({ "x": 0, "y": -10 });
-        let d = transform({ "x": 0, "y": 10 });
-
-        return (
-            <div className="drawbox">
-                <Stage width={side} height={side}>
-
-                    <Layer>
-                        <Rect
-                            fill="#fafafa"
-                            width={side}
-                            height={side}
-                        />
-                    </Layer>
-
-                    <Layer>
-                        <Line points={
-                            [a.x, a.y, b.x, b.y]
-                        }
-                            stroke="black"
-                            strokeWidth={0.7}
-                            key="graph-h-line"
-                        />
-                        <Line points={
-                            [c.x, c.y, d.x, d.y]
-                        }
-                            stroke="black"
-                            strokeWidth={0.7}
-                            key="graph-v-line" />
-                    </Layer>
-
-                    <Layer>
-                        {this.props.shapes.map(drawShape)}
-                    </Layer>
-
-                </Stage>
-            </div>
-        );
-    }
+// function from https://stackoverflow.com/a/15832662/512042
+function downloadURI(uri, name) {
+    let link = document.createElement('a');
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
-class UpdatingCanvas extends Component {
+const DrawApp = (props) => {
+    const stageref = React.useRef(null);
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            isLoaded: false,
-            shapes: [],
-        };
-    }
+    class Drawbox extends Component {
+        render() {
 
-    run_update() {
-        fetch(`${address}/api/shapes`)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        isLoaded: true,
-                        shapes: result
-                    });
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                }
-            ).catch(e => console.log(e));
-    }
+            let a = transform({ "x": -10, "y": 0 });
+            let b = transform({ "x": 10, "y": 0 });
+            let c = transform({ "x": 0, "y": -10 });
+            let d = transform({ "x": 0, "y": 10 });
 
-    componentDidMount() {
-        this.run_update();
-
-        this.interval = setInterval(() => {
-            this.run_update();
-
-            this.setState({
-                time: Date.now(),
-                isLoaded: this.state.isLoaded,
-                shapes: this.state.shapes
-            });
-        }, 500);
-    }
-    componentWillUnmount() {
-        clearInterval(this.interval);
-        this.setState({ cancelled: true });
-    }
-
-    render() {
-
-        if (this.state.isLoaded) {
             return (
-                <div>
-                    <Drawbox shapes={this.state.shapes} />
-                </div>
+                <div className="drawbox">
+                    <Stage width={side} height={side} ref={stageref}>
 
-            )
-        } else {
-            <div>
-                <Drawbox shapes={[]} />
-            </div>
+                        <Layer>
+                            <Rect
+                                fill="#fafafa"
+                                width={side}
+                                height={side}
+                            />
+                        </Layer>
+
+                        <Layer>
+                            <Line points={
+                                [a.x, a.y, b.x, b.y]
+                            }
+                                stroke="black"
+                                strokeWidth={0.7}
+                                key="graph-h-line"
+                            />
+                            <Line points={
+                                [c.x, c.y, d.x, d.y]
+                            }
+                                stroke="black"
+                                strokeWidth={0.7}
+                                key="graph-v-line" />
+                        </Layer>
+
+                        <Layer>
+                            {this.props.shapes.map(drawShape)}
+                        </Layer>
+
+                    </Stage>
+                </div>
+            );
+        }
+    }
+
+    class UpdatingCanvas extends Component {
+
+        constructor(props) {
+            super(props);
+            this.state = {
+                isLoaded: false,
+                shapes: [],
+            };
         }
 
+        run_update() {
+            fetch(`${address}/api/shapes`)
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        this.setState({
+                            isLoaded: true,
+                            shapes: result
+                        });
+                    },
+                    // Note: it's important to handle errors here
+                    // instead of a catch() block so that we don't swallow
+                    // exceptions from actual bugs in components.
+                    (error) => {
+                        this.setState({
+                            isLoaded: true,
+                            shapes: []
+                        });
+                    }
+                ).catch(e => console.log(e));
+        }
 
+        componentDidMount() {
+            this.run_update();
+
+            this.interval = setInterval(() => {
+                this.run_update();
+
+                this.setState({
+                    time: Date.now(),
+                    isLoaded: this.state.isLoaded,
+                    shapes: this.state.shapes
+                });
+            }, 500);
+        }
+        componentWillUnmount() {
+            clearInterval(this.interval);
+            this.setState({ cancelled: true });
+        }
+
+        render() {
+
+            if (this.state.isLoaded) {
+                return (
+                    <div>
+                        <Drawbox shapes={this.state.shapes} />
+                    </div>
+
+                )
+            } else {
+                <div>
+                    <Drawbox shapes={[]} />
+                </div>
+            }
+
+
+        }
     }
-}
 
-class Controls extends Component {
-    render() {
-        return (<div>
-            <SaveButton on_sucess={this.props.update} />
-            <LoadButton on_sucess={this.props.update} />
-            <ClearButton on_sucess={this.props.update} />
-            <DBSave on_sucess={this.props.update} />
-            <DBLoad on_sucess={this.props.update} />
-        </div>);
-    }
-}
+    class ImgSave extends Component {
+        render() {
+            return (
+                <button
 
-class DrawApp extends Component {
-
-    constructor(props) {
-        super(props);
-        this.canvas = React.createRef();
+                    onClick={
+                        () => {
+                            let uri = stageref.current.toDataURL();
+                            downloadURI(uri, "shapes.png");
+                        }
+                    }
+                    className="control-button">Save image</button>
+            )
+        }
     }
 
-    handleUpdate = () => {
-        this.canvas.current.run_update();
+
+    class Controls extends Component {
+        render() {
+            return (<div style={{
+                "display": "flex",
+                "flexDirection": "column"
+            }}>
+                <SaveButton />
+                <LoadButton on_sucess={this.props.update} />
+                <ClearButton on_sucess={this.props.update} />
+                <DBSave />
+                <DBLoad on_sucess={this.props.update} />
+                <ImgSave />
+            </div>);
+        }
     }
 
-    render() {
+    class DrawApp extends Component {
 
-        let canvas = (<UpdatingCanvas ref={this.canvas} />);
+        constructor(props) {
+            super(props);
+            this.canvas = React.createRef();
+        }
 
-        return (<div style={{
-            "display": "flex",
-            "flexDirection": "row"
-        }}>
-            {canvas}
-            <div style={{ "paddingLeft": "30px", "paddingTop": "100px" }}>
-                <Controls update={this.handleUpdate} />
-            </div>
+        handleUpdate = () => {
+            this.canvas.current.run_update();
+        }
+
+        render() {
+
+            let canvas = (<UpdatingCanvas ref={this.canvas} />);
+
+            return (<div style={{
+                "display": "flex",
+                "flexDirection": "row"
+            }}>
+                {canvas}
+                <div style={{ "paddingLeft": "30px", "paddingTop": "100px" }}>
+                    <Controls update={this.handleUpdate} />
+                </div>
 
 
-        </div>)
+            </div>)
+        }
     }
+    return <DrawApp />;
 }
 
 export default DrawApp;
