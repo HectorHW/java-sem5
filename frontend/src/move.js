@@ -1,7 +1,6 @@
 import { Component } from "react";
 import get_host from "./shared";
 import { ShapeSelector } from "./shape_selector";
-import { act } from "react-dom/test-utils";
 
 var address = get_host();
 var action = { "dx": 0, "dy": 0 };
@@ -62,7 +61,6 @@ class ActionSelector extends Component {
     }
 }
 
-
 class SubmitButton extends Component {
     render() {
         return <button
@@ -70,11 +68,6 @@ class SubmitButton extends Component {
             onClick={() => {
                 let selection = document.getElementById("selector").value;
                 console.log(selection);
-
-                let selected = document.getElementById("actionSelector").value;
-                console.log(selected);
-
-
 
                 if (selection === 0 || selection) {
                     fetch(`${address}/api/shapes/${selection}/move`, {

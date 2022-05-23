@@ -8,7 +8,7 @@ import get_host from "./shared";
 class TopButton extends Component {
     render() {
 
-        if (window.location.pathname == this.props.path) {
+        if (window.location.pathname === this.props.path) {
             return <button onClick={() => {
                 window.open(this.props.path + window.location.search, "_self");
             }} className="top-button-current">{this.props.text}</button>
@@ -17,7 +17,6 @@ class TopButton extends Component {
                 window.open(this.props.path + window.location.search, "_self");
             }} className="top-button">{this.props.text}</button>
         }
-
 
     }
 }

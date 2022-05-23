@@ -18,7 +18,7 @@ class Main extends Component {
     return (<Router>
       <Routes>
         <Route path="/" element={<MainPage />}></Route>
-        <Route path="/add"></Route>
+        <Route path="/add" element={<CreationPage />}></Route>
         <Route path="/delete" element={<DeletePage />}></Route>
         <Route path="/move" element={<MovePage />}></Route>
         <Route path="/area" element={<AreaPage />}></Route>
