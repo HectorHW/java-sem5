@@ -1,7 +1,59 @@
-import { Component } from "react";
+import React, { Component } from "react";
+import { ShapeSelector } from "./shape_selector";
+import get_host from "./shared";
 
-export class PerimeterPage extends Component {
+var address = get_host();
+
+class SubmitButton extends Component {
     render() {
-        return (<div>perimeter</div>)
+        return <button
+            className="control-button"
+            onClick={() => {
+                let selection = document.getElementById("shapeSelector").value;
+                fetch(`${address}/api/shapes/${selection}/perimeter`).then(
+                    data => data.json()
+                ).then(area => alert(`perimeter: ${area}`))
+            }}>compute</button>
     }
 }
+
+
+export class PerimeterPage extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            shapes: []
+        }
+    }
+
+    componentDidMount() {
+        fetch(`${address}/api/shapes`)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    this.setState({
+                        isLoaded: true,
+                        shapes: result
+                    });
+                },
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        shapes: []
+                    });
+                }
+            ).catch(e => console.log(e));
+    }
+
+    render() {
+        return (<div>
+            <ShapeSelector options={this.state.shapes} />
+            <SubmitButton />
+        </div>)
+    }
+}
+
+
+
+
