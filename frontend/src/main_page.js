@@ -1,9 +1,6 @@
 import "./index.css";
 import React, { Component } from "react";
-import { createRoot } from 'react-dom/client';
 import { Stage, Layer, Line, Ellipse, Rect } from 'react-konva';
-
-import Konva from "konva";
 
 import get_host from "./shared";
 
@@ -272,3 +269,13 @@ const DrawApp = (props) => {
 }
 
 export default DrawApp;
+
+export class MainPage extends Component {
+    render() {
+        return (
+            <div>
+                <DrawApp />
+            </div>
+        )
+    }
+}
