@@ -8,7 +8,7 @@ import vsredkin.model.points.Point2D;
 
 import java.util.Arrays;
 
-@ToString
+@ToString(callSuper=true)
 @Creatable
 public class Trapeze extends vsredkin.model.figures2d.QGon {
 

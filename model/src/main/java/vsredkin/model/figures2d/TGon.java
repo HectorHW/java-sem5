@@ -7,7 +7,7 @@ import vsredkin.model.points.Point2D;
 
 import java.util.Arrays;
 
-@ToString
+@ToString(callSuper=true)
 @Creatable
 public class TGon extends vsredkin.model.figures2d.NGon {
 
